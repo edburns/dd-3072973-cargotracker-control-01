@@ -54,9 +54,12 @@ class ChangeArrivalDeadlineDateTest {
   @Test
   void changeArrivalDeadlineRejectsNullSelection() throws Exception {
     FakeBookingServiceFacade facade = new FakeBookingServiceFacade();
-    ChangeArrivalDeadlineDate editor = editorWithFacade(facade);
+    TestChangeArrivalDeadlineDate editor = new TestChangeArrivalDeadlineDate();
+    setFacade(editor, facade);
 
-    assertThrows(javax.faces.FacesException.class, editor::changeArrivalDeadline);
+    editor.changeArrivalDeadline();
+
+    assertEquals("An arrival deadline date is required.", editor.errorMessage);
     assertEquals(0, facade.changeDeadlineCalls);
   }
 
@@ -104,10 +107,24 @@ class ChangeArrivalDeadlineDateTest {
   private static ChangeArrivalDeadlineDate editorWithFacade(BookingServiceFacade facade)
       throws Exception {
     ChangeArrivalDeadlineDate editor = new ChangeArrivalDeadlineDate();
+    setFacade(editor, facade);
+    return editor;
+  }
+
+  private static void setFacade(ChangeArrivalDeadlineDate editor, BookingServiceFacade facade)
+      throws Exception {
     Field facadeField = ChangeArrivalDeadlineDate.class.getDeclaredField("bookingServiceFacade");
     facadeField.setAccessible(true);
     facadeField.set(editor, facade);
-    return editor;
+  }
+
+  private static class TestChangeArrivalDeadlineDate extends ChangeArrivalDeadlineDate {
+    private String errorMessage;
+
+    @Override
+    void addErrorMessage(String summary) {
+      errorMessage = summary;
+    }
   }
 
   private static CargoRoute cargoWithDeadline(Date deadline) {

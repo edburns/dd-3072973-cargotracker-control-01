@@ -5,6 +5,8 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.faces.FacesException;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -64,10 +66,17 @@ public class ChangeArrivalDeadlineDate implements Serializable {
 
   public void changeArrivalDeadline() {
     if (arrivalDeadlineDate == null) {
-      throw new FacesException("An arrival deadline date is required.");
+      addErrorMessage("An arrival deadline date is required.");
+      return;
     }
 
     bookingServiceFacade.changeDeadline(trackingId, arrivalDeadlineDate);
     PrimeFaces.current().dialog().closeDynamic("DONE");
+  }
+
+  void addErrorMessage(String summary) {
+    FacesMessage message = new FacesMessage(summary);
+    message.setSeverity(FacesMessage.SEVERITY_ERROR);
+    FacesContext.getCurrentInstance().addMessage(null, message);
   }
 }
