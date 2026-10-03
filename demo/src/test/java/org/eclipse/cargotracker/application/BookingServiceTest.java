@@ -212,4 +212,31 @@ public class BookingServiceTest {
     assertFalse(cargo.getDelivery().isUnloadedAtDestination());
     assertEquals(RoutingStatus.MISROUTED, cargo.getDelivery().getRoutingStatus());
   }
+
+  @Test
+  @Order(5)
+  public void testChangeDeadline() {
+    GregorianCalendar calendar = new GregorianCalendar();
+    calendar.setTime(deadline);
+    calendar.add(Calendar.MONTH, 1);
+    Date newDeadline = calendar.getTime();
+
+    bookingService.changeDeadline(trackingId, newDeadline);
+
+    Cargo cargo = cargoRepository.find(trackingId);
+
+    assertEquals(SampleLocations.CHICAGO, cargo.getOrigin());
+    assertEquals(SampleLocations.HELSINKI, cargo.getRouteSpecification().getDestination());
+    assertTrue(
+        DateUtils.isSameDay(newDeadline, cargo.getRouteSpecification().getArrivalDeadline()));
+    assertEquals(assigned, cargo.getItinerary());
+    assertEquals(TransportStatus.NOT_RECEIVED, cargo.getDelivery().getTransportStatus());
+    assertEquals(Location.UNKNOWN, cargo.getDelivery().getLastKnownLocation());
+    assertEquals(Voyage.NONE, cargo.getDelivery().getCurrentVoyage());
+    assertFalse(cargo.getDelivery().isMisdirected());
+    assertEquals(Delivery.ETA_UNKOWN, cargo.getDelivery().getEstimatedTimeOfArrival());
+    assertEquals(Delivery.NO_ACTIVITY, cargo.getDelivery().getNextExpectedActivity());
+    assertFalse(cargo.getDelivery().isUnloadedAtDestination());
+    assertEquals(RoutingStatus.MISROUTED, cargo.getDelivery().getRoutingStatus());
+  }
 }
