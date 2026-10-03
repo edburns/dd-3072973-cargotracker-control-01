@@ -228,8 +228,7 @@ public class BookingServiceTest {
     assertEquals(SampleLocations.CHICAGO, cargo.getOrigin());
     assertEquals(SampleLocations.HELSINKI, cargo.getRouteSpecification().getDestination());
     assertTrue(
-        DateUtils.isSameDay(
-            newDeadline, cargo.getRouteSpecification().getArrivalDeadline()));
+        DateUtils.isSameDay(newDeadline, cargo.getRouteSpecification().getArrivalDeadline()));
     assertEquals(assigned, cargo.getItinerary());
     assertEquals(TransportStatus.NOT_RECEIVED, cargo.getDelivery().getTransportStatus());
     assertEquals(Location.UNKNOWN, cargo.getDelivery().getLastKnownLocation());
