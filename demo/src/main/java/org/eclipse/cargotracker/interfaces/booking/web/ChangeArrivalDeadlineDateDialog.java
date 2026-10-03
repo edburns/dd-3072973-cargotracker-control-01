@@ -33,6 +33,7 @@ public class ChangeArrivalDeadlineDateDialog implements Serializable {
         PrimeFaces.current().dialog().openDynamic("/admin/dialogs/changeArrivalDeadlineDate.xhtml", options, params);
     }
 
+    // Retained as the dialogReturn listener hook for the dashboard.
     public void handleReturn(SelectEvent event) { }
 
     public void cancel() {
